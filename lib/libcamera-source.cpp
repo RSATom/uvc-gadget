@@ -35,8 +35,6 @@ extern "C" {
 using namespace libcamera;
 using namespace std::placeholders;
 
-#define to_libcamera_source(s) container_of(s, struct libcamera_source, src)
-
 struct libcamera_source {
 	struct video_source src;
 
@@ -164,7 +162,7 @@ static void libcamera_source_video_process(void *d)
 
 static void libcamera_source_destroy(struct video_source *s)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 
 	src->camera->requestCompleted.disconnect(src);
 
@@ -181,7 +179,7 @@ static void libcamera_source_destroy(struct video_source *s)
 static int libcamera_source_set_format(struct video_source *s,
 				       struct v4l2_pix_format *fmt)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 	StreamConfiguration &streamConfig = src->config->at(0);
 	__u32 chosen_pixelformat = fmt->pixelformat;
 
@@ -233,7 +231,7 @@ static int libcamera_source_set_format(struct video_source *s,
 
 static int libcamera_source_set_frame_rate(struct video_source *s, unsigned int fps)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 	int64_t frame_time = 1000000 / fps;
 
 	src->controls.set(controls::FrameDurationLimits,
@@ -244,7 +242,7 @@ static int libcamera_source_set_frame_rate(struct video_source *s, unsigned int 
 
 static int libcamera_source_alloc_buffers(struct video_source *s, unsigned int nbufs)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 	StreamConfiguration &streamConfig = src->config->at(0);
 	int ret;
 
@@ -293,7 +291,7 @@ static int libcamera_source_alloc_buffers(struct video_source *s, unsigned int n
 static int libcamera_source_export_buffers(struct video_source *s,
 					   struct video_buffer_set **bufs)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 	Stream *stream = src->config->at(0).stream();
 	const std::vector<std::unique_ptr<FrameBuffer>> &buffers = src->allocator->buffers(stream);
 	struct video_buffer_set *vid_buf_set;
@@ -325,7 +323,7 @@ static int libcamera_source_export_buffers(struct video_source *s,
 static int libcamera_source_import_buffers(struct video_source *s,
 					   struct video_buffer_set *buffers)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 
 	for (unsigned int i = 0; i < buffers->nbufs; i++)
 		src->buffers.buffers[i].mem = buffers->buffers[i].mem;
@@ -335,7 +333,7 @@ static int libcamera_source_import_buffers(struct video_source *s,
 
 static int libcamera_source_free_buffers(struct video_source *s)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 	Stream *stream = src->config->at(0).stream();
 
 	for (auto &[buf, span] : src->mapped_buffers_)
@@ -352,7 +350,7 @@ static int libcamera_source_free_buffers(struct video_source *s)
 
 static int libcamera_source_stream_on(struct video_source *s)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 	Stream *stream = src->config->at(0).stream();
 	int ret;
 
@@ -404,7 +402,7 @@ static int libcamera_source_stream_on(struct video_source *s)
 
 static int libcamera_source_stream_off(struct video_source *s)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 
 	src->camera->stop();
 	events_unwatch_fd(src->src.events, src->pfds[0], EVENT_READ);
@@ -431,7 +429,7 @@ static int libcamera_source_stream_off(struct video_source *s)
 static int libcamera_source_queue_buffer(struct video_source *s,
 					 struct video_buffer *buf)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 
 	for (std::unique_ptr<Request> &r : src->requests) {
 		if (r->cookie() == buf->index) {
@@ -596,7 +594,7 @@ err_free_src:
 
 void libcamera_source_init(struct video_source *s, struct events *events)
 {
-	struct libcamera_source *src = to_libcamera_source(s);
+	struct libcamera_source *src = (libcamera_source *)s;
 
 	src->src.events = events;
 }
