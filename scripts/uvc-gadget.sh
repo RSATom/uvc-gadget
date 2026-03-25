@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # SPDX-License-Identifier: MIT
 
 set -e
@@ -123,6 +123,9 @@ delete_uvc() {
 	rmdir functions/$FUNCTION/control/header/h
 	rmdir functions/$FUNCTION
 }
+
+echo "Loading composite module"
+modprobe libcomposite
 
 case "$1" in
     start)
