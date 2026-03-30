@@ -35,7 +35,7 @@ create_frame() {
 	echo $(( $WIDTH * $HEIGHT * 2 )) > $wdir/dwMaxVideoFrameBufferSize
 	cat <<EOF > $wdir/dwFrameInterval
 666666
-100000
+1000000
 5000000
 EOF
 }
