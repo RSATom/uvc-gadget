@@ -95,9 +95,9 @@ create_uvc() {
 	fi
 
 	# Set the packet size: uvc gadget max size is 3k...
-	echo 3072 > functions/$FUNCTION/streaming_maxpacket
+#	echo 3072 > functions/$FUNCTION/streaming_maxpacket
 	echo 2048 > functions/$FUNCTION/streaming_maxpacket
-	echo 1024 > functions/$FUNCTION/streaming_maxpacket
+#	echo 1024 > functions/$FUNCTION/streaming_maxpacket
 
 	ln -s functions/$FUNCTION configs/c.1
 }
