@@ -177,6 +177,16 @@ uvc_fill_streaming_control(struct uvc_device *dev,
 	ctrl->bmFramingInfo = 3;
 	ctrl->bPreferedVersion = 1;
 	ctrl->bMaxVersion = 1;
+
+	printf("bmHint: %u\n", ctrl->bmHint);
+	printf("bFormatIndex: %u\n", ctrl->bFormatIndex);
+	printf("bFrameIndex: %u\n", ctrl->bFrameIndex);
+	printf("dwFrameInterval: %u\n", ctrl->dwFrameInterval);
+	printf("dwMaxVideoFrameSize: %u\n", ctrl->dwMaxVideoFrameSize);
+	printf("dwMaxPayloadTransferSize: %u\n", ctrl->dwMaxPayloadTransferSize);
+	printf("bmFramingInfo: %u\n", ctrl->bmFramingInfo);
+	printf("bPreferedVersion: %u\n", ctrl->bPreferedVersion);
+	printf("bMaxVersion: %u\n", ctrl->bMaxVersion);
 }
 
 static void
